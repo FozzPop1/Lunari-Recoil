@@ -7,11 +7,10 @@
 #include <windows.h>
 
 void RunMacro() {
-    if (RecoilToggle == true) {
-        if (GetAsyncKeyState(VK_RBUTTON)) {
-            if (GetAsyncKeyState(VK_LBUTTON)) {
-                recoil.MoveMouseRel(config.RecoilX, config.RecoilY);
-            }
-        }
+    if (RecoilToggle &&
+        GetAsyncKeyState(VK_RBUTTON) &&
+        GetAsyncKeyState(VK_LBUTTON))
+    {
+        recoil.MoveMouseRel(config.RecoilX, config.RecoilY);
     }
 }

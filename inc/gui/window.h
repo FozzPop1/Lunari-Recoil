@@ -12,23 +12,24 @@
 #include <windows.h>
 
 class Window {
-    private:
-
+private:
     GLFWwindow* lunari_window;
-
-    HWND hwnd;
     LONG style;
 
-    public:
-
+public:
+    HWND hwnd = nullptr;
+    
     bool running = true;
     bool ClickThroughWindow;
-
+    bool clickThroughStateDirty;
+    
     void CreateWindowLunari(int Width, int Height, const std::string &title);
     void WindowLoop();
     void StartWindowLoop();
     void GetVirtualDesktopSize(int& width, int& height, int& xPos, int& yPos);
     void SetClickThrough(GLFWwindow* window, bool enable);
+    void UpdateClickThrough(GLFWwindow* window);
+    void HideFromTaskbar(GLFWwindow* window);
 
     int desktopX, desktopY, desktopWidth, desktopHeight;
 };

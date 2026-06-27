@@ -20,6 +20,14 @@ g++ -std=c++17 src/main.cpp ^
     ext/inc/Imgui/imgui.cpp ^
     -I inc -I ext/inc ^
     -L ext/lib ^
+    -O3 ^
+    -march=native ^
+    -funroll-loops ^
+    -ffast-math ^
+    -fno-exceptions ^
+    -fno-rtti ^
+    -flto ^
+    -DNDEBUG ^
     -mwindows ^
     -o "Lunari Recoil" ^
     -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -limm32 -lshell32 -lntdll

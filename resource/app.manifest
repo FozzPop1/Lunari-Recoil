@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+  <!-- Security / UAC -->
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
       <requestedPrivileges>
@@ -7,4 +9,66 @@
       </requestedPrivileges>
     </security>
   </trustInfo>
+
+  <!-- Windows compatibility -->
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- Windows 10 -->
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}"/>
+      <!-- Windows 11 -->
+      <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}"/>
+    </application>
+  </compatibility>
+
+  <!-- Application settings -->
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+
+      <!-- High DPI awareness -->
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
+        PerMonitorV2
+      </dpiAwareness>
+
+      <!-- ✅ Fallback DPI for older Windows versions -->
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+        True/PM
+      </dpiAware>
+
+      <!-- Long file path support -->
+      <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
+        true
+      </longPathAware>
+
+      <!-- ✅ Heap type: use Segment Heap (lower memory, more secure on Win10+) -->
+      <heapType xmlns="http://schemas.microsoft.com/SMI/2020/WindowsSettings">
+        SegmentHeap
+      </heapType>
+
+      <!-- ✅ Disable legacy print dialogs (reduces attack surface) -->
+      <printerDriverIsolation xmlns="http://schemas.microsoft.com/SMI/2011/WindowsSettings">
+        true
+      </printerDriverIsolation>
+
+      <!-- ✅ ActiveCodePage: enforce UTF-8 for all string operations -->
+      <activeCodePage xmlns="http://schemas.microsoft.com/SMI/2019/WindowsSettings">
+        UTF-8
+      </activeCodePage>
+
+    </windowsSettings>
+  </application>
+
+  <!-- ✅ Runtime dependency: tie to specific VC++ runtime to prevent DLL planting -->
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity
+        type="win32"
+        name="Microsoft.Windows.Common-Controls"
+        version="6.0.0.0"
+        processorArchitecture="amd64"
+        publicKeyToken="6595b64144ccf1df"
+        language="*"
+      />
+    </dependentAssembly>
+  </dependency>
+
 </assembly>

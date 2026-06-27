@@ -4,127 +4,247 @@
 #include "../../inc/macro/recoil.h"
 
 #include "../../ext/inc/Imgui/imgui.h"
+#include "../../ext/inc/Imgui/imgui_internal.h"
 #include "../../inc/gui/background_effect.h"
-
+#include "../../inc/version.h"
 #include "../../inc/gui/window.h"
 
 #include <filesystem>
 #include <vector>
+#include <string>
+#include <cstring>
 
+// -------------------------
+// Globals
+// -------------------------
 ImVec2 MenuWindowPos;
 
 bool ShowMenu = true;
-
-std::vector<std::string> fileList;
-
 bool RecoilToggle;
 
-const char* tabs[] = { "Recoil", "Configs", "Settings" };
-
-int menu_idx;
-int selectedconfig = -1;
+int menu_idx = 0;
 
 char ConfigSaveName[256] = "user";
-char ConfigLoadName[256];
+char ConfigLoadName[256] = { 0 };
 
-/*
-    Side Bar Logic
-*/
+float MenuAlpha = 0.0f;
+static float tabAnim[3] = { 0.0f, 0.0f, 0.0f };
 
-void Sidebar() {
-    if (ShowMenu == false) {return;}
+ImVec2 SideBarPos;
+
+// -------------------------
+// Tabs
+// -------------------------
+static const char* tabs[] = {
+    "Recoil",
+    "Configs",
+    "Settings"
+};
+
+// -------------------------
+// Sidebar
+// -------------------------
+void Sidebar()
+{
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, MenuAlpha);
+
     ImGui::SetNextWindowSize(ImVec2(200, 500));
     ImGui::SetNextWindowPos(ImVec2(MenuWindowPos.x - 220, MenuWindowPos.y));
-    ImGui::Begin("Lunari Recoil", 0, 
-    ImGuiWindowFlags_NoResize | 
-    ImGuiWindowFlags_NoCollapse |
-    ImGuiWindowFlags_NoMove);
 
-    ImVec2 win_pos  = ImGui::GetWindowPos();
-    ImVec2 win_size = ImGui::GetWindowSize();
-    RenderStarBackground(ImGui::GetWindowDrawList(), win_pos, win_size);
+    ImGui::Begin(
+        "Lunari Recoil",
+        nullptr,
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar
+    );
 
-    for (int i = 0; i < 3; i++) {
+    SideBarPos = ImGui::GetWindowPos();
+
+    RenderStarBackground(ImGui::GetWindowDrawList(),
+        ImGui::GetWindowPos(),
+        ImGui::GetWindowSize());
+
+    ImGui::Spacing();
+
+    for (int i = 0; i < 3; i++)
+    {
         bool active = (menu_idx == i);
-        if (active) ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 0.8f));
-        if (active) ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5f, 0.5f, 0.5f, 0.8f));
-        if (active) ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5f, 0.5f, 0.5f, 0.8f));
-        if (ImGui::Button(tabs[i], ImVec2(175, 40))) menu_idx = i;
-        if (active) ImGui::PopStyleColor(3);
+
+        // ── Smooth animation (fade 0 → 1) ───────────────
+        float target = active ? 1.0f : 0.0f;
+        tabAnim[i] = ImLerp(tabAnim[i], target, 0.12f);
+
+        // ── Colors based on animation ────────────────────
+        ImVec4 base      = ImVec4(0.10f, 0.10f, 0.14f, 1.0f);
+        ImVec4 accent    = ImVec4(0.45f, 0.38f, 0.90f, 1.0f);
+
+        ImVec4 col       = ImLerp(base, accent, tabAnim[i]);
+        ImVec4 hoverCol  = ImVec4(accent.x, accent.y, accent.z, 0.35f * tabAnim[i]);
+        ImVec4 activeCol = ImVec4(accent.x, accent.y, accent.z, 0.50f * tabAnim[i]);
+
+        ImGui::PushStyleColor(ImGuiCol_Button, col);
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoverCol);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, activeCol);
+
+        if (ImGui::Button(tabs[i], ImVec2(-1, 40)))
+            menu_idx = i;
+
+        ImGui::PopStyleColor(3);
+
+        ImGui::Spacing();
     }
-    
-    
+
     ImGui::End();
+    ImGui::PopStyleVar();
 }
 
-/*
-    Menu Logic
-*/
+// -------------------------
+// Config helper
+// -------------------------
+static std::vector<std::string> GetConfigFiles()
+{
+    std::vector<std::string> files;
 
-void Menu() {
-    if (ShowMenu == false) {return;}
-    ImGui::SetNextWindowSize(ImVec2(800, 500));
-    ImGui::Begin("Version 1.0", 0,
-    ImGuiWindowFlags_NoResize |
-    ImGuiWindowFlags_NoCollapse);
-    
-    MenuWindowPos = ImGui::GetWindowPos();
+    const std::string path = "C:/Lunari/Recoil/Configs";
 
-    ImVec2 win_size = ImGui::GetWindowSize();
-    RenderStarBackground(ImGui::GetWindowDrawList(), MenuWindowPos, win_size);
+    if (!std::filesystem::exists(path))
+        return files;
 
-    if (menu_idx == 0) {
-        ImGui::Checkbox("Recoil", &RecoilToggle);
-        
-        ImGui::Spacing();
-        
-        ImGui::SliderFloat("Recoil X", &config.RecoilX, -100, 100);
-        ImGui::SliderFloat("Recoil Y", &config.RecoilY, -100, 100);
+    for (const auto& p : std::filesystem::directory_iterator(path))
+    {
+        if (p.path().extension() == ".cfg")
+            files.push_back(p.path().filename().string());
     }
 
-    if (menu_idx == 1) {
+    return files;
+}
+
+// -------------------------
+// Main Menu
+// -------------------------
+void Menu()
+{
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, MenuAlpha);
+
+    ImGui::SetNextWindowSize(ImVec2(800, 500));
+    ImGui::Begin(
+        "Version " LUNARI_VERSION,
+        nullptr,
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse
+    );
+
+    MenuWindowPos = ImGui::GetWindowPos();
+
+    RenderStarBackground(ImGui::GetWindowDrawList(),
+        MenuWindowPos,
+        ImGui::GetWindowSize());
+
+    ImGui::Spacing();
+
+    // -------------------------
+    // TAB 0: Recoil
+    // -------------------------
+    if (menu_idx == 0)
+    {
+        ImGui::Text("Recoil Control");
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // Recoil Checkbox
+
+        ImGui::Checkbox("Recoil", &RecoilToggle);
+
+        ImGui::Spacing();
+
+        // Recoil Sliders
+
+        ImGui::SliderFloat("Recoil X", &config.RecoilX, -100.0f, 100.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("Rest##X")) {
+            config.RecoilX = 0;
+        }
+
+        ImGui::SliderFloat("Recoil Y", &config.RecoilY, -100.0f, 100.0f);
+            ImGui::SameLine();
+        if (ImGui::Button("Rest##Y")) {
+            config.RecoilY = 0;
+        }
+    }
+
+    // -------------------------
+    // TAB 1: Configs
+    // -------------------------
+    else if (menu_idx == 1)
+    {
         static std::vector<std::string> configFiles;
         static int selectedIdx = -1;
-        // Scan once + on demand
-        auto RefreshConfigs = [&]() {
-        configFiles.clear();
-        
-        for (auto& p : std::filesystem::directory_iterator("configs"))
-            if (p.path().extension() == ".cfg")
-            configFiles.push_back(p.path().filename().string());
+
+        static auto RefreshConfigs = [&]()
+        {
+            configFiles = GetConfigFiles();
         };
 
-        if (configFiles.empty()) RefreshConfigs();
+        if (configFiles.empty())
+            RefreshConfigs();
 
         ImGui::InputText("Config Name", ConfigSaveName, IM_ARRAYSIZE(ConfigSaveName));
 
-        for (int i = 0; i < 3; i++) {
-            ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Save"))
+        {
+            config.SaveConfig(ConfigSaveName);
+            RefreshConfigs();
         }
 
-        if (ImGui::Button("Save"))  { config.SaveConfig(ConfigSaveName); RefreshConfigs(); }
         ImGui::SameLine();
-        if (ImGui::Button("Load") && selectedIdx >= 0) config.LoadConfig(configFiles[selectedIdx]);
-        ImGui::SameLine();
-        if (ImGui::Button("Refresh")) RefreshConfigs();
 
-        for (int i = 0; i < 3; i++) {
-            ImGui::Spacing();
+        if (ImGui::Button("Load") && selectedIdx >= 0 && selectedIdx < (int)configFiles.size())
+        {
+            config.LoadConfig(configFiles[selectedIdx]);
         }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Refresh"))
+            RefreshConfigs();
+
+        ImGui::Spacing();
+        ImGui::Spacing();
 
         std::vector<const char*> items;
-        for (auto& f : configFiles) items.push_back(f.c_str());
+        items.reserve(configFiles.size());
+
+        for (auto& f : configFiles)
+            items.push_back(f.c_str());
+
         ImGui::ListBox("##configs", &selectedIdx, items.data(), (int)items.size(), 6);
 
-        if (selectedIdx >= 0)
-            strncpy(ConfigLoadName, configFiles[selectedIdx].c_str(), 256);
+        if (selectedIdx >= 0 && selectedIdx < (int)configFiles.size())
+        {
+            strncpy_s(
+                ConfigLoadName,
+                configFiles[selectedIdx].c_str(),
+                sizeof(ConfigLoadName) - 1
+            );
+        }
     }
 
-    if (menu_idx == 2) {
-        if (ImGui::Button("Exit")) {
+    // -------------------------
+    // TAB 2: Settings
+    // -------------------------
+    else if (menu_idx == 2)
+    {
+        if (ImGui::Button("Exit"))
+        {
             window.running = false;
         }
     }
 
     ImGui::End();
+    ImGui::PopStyleVar();
 }

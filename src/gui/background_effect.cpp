@@ -3,6 +3,10 @@
 #include <vector>
 #include <cmath>
 #include <cstdlib>
+#include <algorithm>
+#include <dwmapi.h>
+
+#pragma comment(lib, "dwmapi.lib")
 
 void RenderStarBackground(ImDrawList* draw_list, ImVec2 pos, ImVec2 size) {
     struct Star {

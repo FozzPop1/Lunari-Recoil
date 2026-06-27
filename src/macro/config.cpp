@@ -3,33 +3,53 @@
 #include <fstream>
 #include <filesystem>
 
-/*
-    Base Config System
-*/
+namespace fs = std::filesystem;
 
-void Config::SetupConfigFolder() {
-    std::filesystem::create_directory("configs");
-}
+static const fs::path ConfigFolder  = "C:/Lunari/Recoil/Configs";
 
-void Config::SaveConfig(const std::string &ConfigName) {
-    std::ofstream config("configs\\" + ConfigName + ".cfg");
-
-    if (!config.is_open())
-        return;
-
-    config << Config::RecoilX << '\n';
-    config << Config::RecoilY << '\n';
-}
-
-void Config::LoadConfig(const std::string &ConfigName)
+static inline fs::path GetConfigPath(const std::string& name)
 {
-    std::ifstream config("configs/" + ConfigName);
+    return ConfigFolder / (name + ".cfg");
+}
 
-    if (!config)
+void Config::SetupConfigFolder()
+{
+    std::error_code ec;
+    fs::create_directories(ConfigFolder, ec);
+}
+
+void Config::SaveConfig(const std::string& configName)
+{
+    const fs::path path = GetConfigPath(configName);
+
+    std::ofstream file(path, std::ios::trunc | std::ios::binary);
+    if (!file)
         return;
 
-    config >> Config::RecoilX;
-    config >> Config::RecoilY;
+    file.write(reinterpret_cast<const char*>(&RecoilX), sizeof(RecoilX));
+    file.write(reinterpret_cast<const char*>(&RecoilY), sizeof(RecoilY));
+}
+
+void Config::LoadConfig(const std::string& configName)
+{
+    const fs::path path = GetConfigPath(configName);
+
+    std::ifstream file(path, std::ios::binary);
+    if (!file)
+    {
+        RecoilX = 0.0f;
+        RecoilY = 0.0f;
+        return;
+    }
+
+    file.read(reinterpret_cast<char*>(&RecoilX), sizeof(RecoilX));
+    file.read(reinterpret_cast<char*>(&RecoilY), sizeof(RecoilY));
+
+    if (file.fail())
+    {
+        RecoilX = 0.0f;
+        RecoilY = 0.0f;
+    }
 }
 
 Config config;
