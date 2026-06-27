@@ -20,6 +20,7 @@ g++ -std=c++17 src/main.cpp ^
     ext/inc/Imgui/imgui.cpp ^
     -I inc -I ext/inc ^
     -L ext/lib ^
+    -mwindows ^
     -o "Lunari Recoil" ^
     -lglfw3 -lopengl32 -lgdi32 -luser32 -lkernel32 -limm32 -lshell32 -lntdll
 

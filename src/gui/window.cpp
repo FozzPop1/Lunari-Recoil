@@ -23,7 +23,7 @@ void Window::CreateWindowLunari(int W, int H, const std::string &title) {
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);      // Remove borders/title bar
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE); // Enable alpha blending
-    //glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);         // Always on top
+    glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);         // Always on top
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);      // Prevent manual dragging to resize
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     
@@ -63,6 +63,23 @@ void Window::CreateWindowLunari(int W, int H, const std::string &title) {
     glViewport(0, 0, W, H);
 }
 
+void Window::SetClickThrough(GLFWwindow* window, bool enable)
+{
+    HWND hwnd = glfwGetWin32Window(window);
+    LONG exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+
+    if (enable)
+    {
+        exStyle |= WS_EX_TRANSPARENT | WS_EX_LAYERED;
+    }
+    else
+    {
+        exStyle &= ~WS_EX_TRANSPARENT;
+    }
+
+    SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
+}
+
 void Window::StartWindowLoop() {
 while (running) {
     glfwPollEvents();
@@ -73,6 +90,12 @@ while (running) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+
+    if (ClickThroughWindow) {
+        SetClickThrough(lunari_window, true);
+    } else {
+        SetClickThrough(lunari_window, false);
+    }
 
     WindowLoop();
 

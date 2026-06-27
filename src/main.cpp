@@ -12,6 +12,11 @@
 #include "../inc/macro/config.h"
 
 void Window::WindowLoop() {
+    if (GetAsyncKeyState(VK_INSERT) & 1) {
+        ShowMenu = !ShowMenu;
+        ClickThroughWindow = !ClickThroughWindow;
+    }
+
     Sidebar();
     Menu();
     RunMacro();

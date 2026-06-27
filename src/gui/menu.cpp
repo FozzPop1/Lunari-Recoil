@@ -13,6 +13,8 @@
 
 ImVec2 MenuWindowPos;
 
+bool ShowMenu = true;
+
 std::vector<std::string> fileList;
 
 bool RecoilToggle;
@@ -22,7 +24,7 @@ const char* tabs[] = { "Recoil", "Configs", "Settings" };
 int menu_idx;
 int selectedconfig = -1;
 
-char ConfigSaveName[256] = "user.cfg";
+char ConfigSaveName[256] = "user";
 char ConfigLoadName[256];
 
 /*
@@ -30,6 +32,7 @@ char ConfigLoadName[256];
 */
 
 void Sidebar() {
+    if (ShowMenu == false) {return;}
     ImGui::SetNextWindowSize(ImVec2(200, 500));
     ImGui::SetNextWindowPos(ImVec2(MenuWindowPos.x - 220, MenuWindowPos.y));
     ImGui::Begin("Lunari Recoil", 0, 
@@ -59,6 +62,7 @@ void Sidebar() {
 */
 
 void Menu() {
+    if (ShowMenu == false) {return;}
     ImGui::SetNextWindowSize(ImVec2(800, 500));
     ImGui::Begin("Version 1.0", 0,
     ImGuiWindowFlags_NoResize |

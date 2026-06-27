@@ -8,6 +8,8 @@
 void Sidebar();
 void Menu();
 
+extern bool ShowMenu;
+
 extern ImVec2 MenuWindowPos;
 
 extern std::vector<std::string> fileList;
