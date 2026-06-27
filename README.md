@@ -1,30 +1,34 @@
 # Lunari Recoil
 
+<img width="1049" height="510" alt="Lunari Recoil" src="https://github.com/user-attachments/assets/790ffde6-7545-4b15-a147-87b83d6d1565" />
+
 A free, open-source recoil control script designed to be simple, customizable, and easy to use.
+
+Built on **Starlight Recoil Pro**, with numerous improvements, optimizations, and quality-of-life enhancements.
 
 ## ✨ Features
 
-- 🎯 Recoil control
-- ⚙️ Customizable configurations
-- 🚀 Simple setup and user-friendly interface
-- 📂 Open source
+* 🎯 Recoil control
+* ⚙️ Fully customizable configurations
+* 🚀 Simple setup and easy-to-use interface
+* 📂 Free & open source
+* 🔄 Improved over the original Starlight Recoil Pro
 
 ## 📦 Installation
 
 1. Download the latest release.
-2. Extract the downloaded files.
-3. Run the application.
-4. Configure your settings and start using it.
+2. Extract the downloaded archive.
+3. Launch `Lunari Recoil.exe`.
 
 ## 📖 Usage
 
-1. Launch the application.
-2. Adjust settings to your preference.
+1. Open Lunari Recoil.
+2. Adjust the settings to your preference.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to submit issues, suggest improvements, or open a pull request.
+Contributions are welcome! Feel free to open an issue, suggest new features, or submit a pull request.
 
 ## 📄 License
 
-This project is released under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for more information.
