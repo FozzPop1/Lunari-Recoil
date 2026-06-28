@@ -7,7 +7,17 @@
 #include "../../ext/inc/Imgui/imgui_impl_opengl3.h"
 #include "../../ext/inc/Imgui/imgui_internal.h"
 
+#include "../../resource/fonts/fontawesome6.h"
+
+#include "../../resource/fonts/Inter_18pt-Regular.h"
+#include "../../resource/fonts/Inter_18pt-SemiBold.h"
+#include "../../resource/fonts/fa-solid-900.h"
+
 #include "../../inc/gui/menu.h"
+
+ImFont* FontRegular  = nullptr;
+ImFont* FontSemiBold = nullptr;
+ImFont* FontAwesome = nullptr;
 
 // ─────────────────────────────────────────────
 // Hide from taskbar
@@ -85,10 +95,42 @@ void Window::CreateWindowLunari(int W, int H, const std::string& title)
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    io.Fonts->AddFontFromFileTTF(
-        "C:\\Windows\\Fonts\\segoeui.ttf",
-        18.0f
-    );
+    /*
+        Font Setups
+    */
+
+    static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+
+    ImFontConfig regularConfig;
+    regularConfig.FontDataOwnedByAtlas = false;
+
+    ImFontConfig semiBoldConfig;
+    semiBoldConfig.FontDataOwnedByAtlas = false;
+
+    ImFontConfig iconConfig;
+    iconConfig.FontDataOwnedByAtlas  = false;
+    iconConfig.MergeMode             = true;
+    iconConfig.GlyphMinAdvanceX      = 18.0f;
+    iconConfig.GlyphMaxAdvanceX      = 18.0f;
+    iconConfig.PixelSnapH            = true;
+    iconConfig.GlyphOffset           = ImVec2(0.0f, 2.0f);
+
+    // Regular + icons
+    FontRegular = io.Fonts->AddFontFromMemoryTTF(
+        (void*)Inter_18ptRegular, sizeof(Inter_18ptRegular), 18.0f, &regularConfig);
+    io.Fonts->AddFontFromMemoryTTF(
+        (void*)fasolid900, sizeof(fasolid900), 18.0f, &iconConfig, icon_ranges);
+
+    // SemiBold + icons
+    FontSemiBold = io.Fonts->AddFontFromMemoryTTF(
+        (void*)Inter_18ptSemiBold, sizeof(Inter_18ptSemiBold), 18.0f, &semiBoldConfig);
+    io.Fonts->AddFontFromMemoryTTF(
+        (void*)fasolid900, sizeof(fasolid900), 18.0f, &iconConfig, icon_ranges);
+
+    io.Fonts->Build();
+
+    // Font Setup Done
+
 
     ImGui::StyleColorsDark();
 

@@ -6,9 +6,17 @@
 #include <string>
 
 // UI functions
-void Sidebar();
 void Menu();
+
+void RecoilMenu();
+void ConfigMenu();
+void SettingsMenu();
+void SidebarMenu();
 void RecoilPreview();
+
+// extra functions
+
+std::vector<std::string> GetConfigFiles();
 
 // -------------------------
 // Global UI state
@@ -29,3 +37,12 @@ extern char ConfigLoadName[256];
 
 extern float MenuAlpha;
 extern ImVec2 SideBarPos;
+
+extern ImFont* FontRegular;
+extern ImFont* FontSemiBold;
+extern ImFont* FontAwesome;
+
+extern const ImVec4 ACCENT;
+extern const ImVec4 BASE_SURFACE;
+
+extern const char* tabs[];

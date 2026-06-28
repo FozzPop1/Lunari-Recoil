@@ -1,3 +1,3 @@
 #pragma once
 
-#define LUNARI_VERSION "1.3.0"
+#define LUNARI_VERSION "1.3.4"

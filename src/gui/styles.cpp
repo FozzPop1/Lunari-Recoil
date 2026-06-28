@@ -12,7 +12,7 @@ void DefualtDarkStyle()
 
     style.WindowPadding            = ImVec2(14.0f, 14.0f);
     style.WindowRounding           = 8.0f;
-    style.WindowBorderSize         = 1.0f;
+    style.WindowBorderSize         = 0.0f;
     style.WindowMinSize            = ImVec2(24.0f, 24.0f);
     style.WindowTitleAlign         = ImVec2(0.0f, 0.5f);
     style.WindowMenuButtonPosition = ImGuiDir_None;
@@ -71,7 +71,7 @@ void DefualtDarkStyle()
     c[ImGuiCol_TextDisabled]      = textMuted;
 
     c[ImGuiCol_WindowBg]          = bg0;
-    c[ImGuiCol_ChildBg]           = bg1;
+    c[ImGuiCol_ChildBg]           = ImVec4(0, 0, 0, 0.3f);
     c[ImGuiCol_PopupBg]           = bg1;
 
     c[ImGuiCol_Border]            = border;

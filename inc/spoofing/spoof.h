@@ -5,9 +5,6 @@
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 
-/*
-    Very basic not to sure how good this works but why not
-*/
 
 // ── Manual struct definitions ──
 typedef struct _UNICODE_STRING_FULL {

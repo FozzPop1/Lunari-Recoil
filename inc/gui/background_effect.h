@@ -8,4 +8,4 @@
 
 #include <windows.h>
 
-void RenderStarBackground(ImDrawList* draw_list, ImVec2 pos, ImVec2 size, int windowId);
+void RenderStarBackground(ImDrawList* dl, ImVec2 pos, ImVec2 size, int windowId, float alpha);
