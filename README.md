@@ -1,6 +1,7 @@
 # Lunari Recoil
 
-<img width="1034" height="525" alt="image" src="https://github.com/user-attachments/assets/b9d2073f-22e5-4f93-801d-8368d333478c" />
+<img width="1208" height="503" alt="Screenshot 2026-06-28 080203" src="https://github.com/user-attachments/assets/3b9c50e5-f59f-4d8f-99b2-d9f0bbb64296" />
+
 
 A free, open-source recoil control script designed to be simple, customizable, and easy to use.
 
