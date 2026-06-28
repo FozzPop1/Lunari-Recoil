@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include <iostream>
 
 #include <cmath>
@@ -39,6 +41,7 @@ void Window::WindowLoop()
     {
         Sidebar();
         Menu();
+        RecoilPreview();
     }
 
     RunMacro();

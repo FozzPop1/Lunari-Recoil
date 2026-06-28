@@ -8,6 +8,7 @@ class Config {
     public:
 
     float RecoilX, RecoilY;
+    float SmoothingX, SmoothingY, Humanize;
 
     void SetupConfigFolder();
     

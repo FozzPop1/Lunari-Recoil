@@ -11,6 +11,6 @@ void RunMacro() {
         GetAsyncKeyState(VK_RBUTTON) &&
         GetAsyncKeyState(VK_LBUTTON))
     {
-        recoil.MoveMouseRel(config.RecoilX, config.RecoilY);
+        recoil.MoveMouseRel(config.RecoilX, config.RecoilY, config.SmoothingX, config.SmoothingY, config.Humanize);
     }
 }

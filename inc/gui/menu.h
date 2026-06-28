@@ -8,6 +8,7 @@
 // UI functions
 void Sidebar();
 void Menu();
+void RecoilPreview();
 
 // -------------------------
 // Global UI state
